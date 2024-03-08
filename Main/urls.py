@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import share_calendar
 
 urlpatterns = [
     path('', views.home , name='home' ),
@@ -13,5 +14,6 @@ urlpatterns = [
     path('delete_calendar/<int:calendar_id>/', views.delete_calendar, name='delete_calendar'),
     path('delete_event/<int:event_id>/', views.delete_event, name='delete_event'),
     path('edit_calendar/<int:calendar_id>/',views.edit_calendar, name='edit_calendar'),
-    path('edit_event/<int:event_id>/',views.edit_event, name='edit_event')
+    path('edit_event/<int:event_id>/',views.edit_event, name='edit_event'),
+    path('share-calendar/<int:calendar_id>/', share_calendar, name='share_calendar')
 ]
