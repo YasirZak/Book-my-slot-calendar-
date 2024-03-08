@@ -8,6 +8,7 @@ from .forms import CalendarForm, EventForm
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AnonymousUser
+from .forms import ShareCalendarForm
 
 
 # Create your views here.
@@ -134,3 +135,34 @@ def edit_event(request, event_id):
     else:
         form = EventForm(instance=event)
     return render(request, 'Main/edit_event.html',{'form':form,'event':event})
+
+@login_required
+def share_calendar(request, calendar_id):
+    # Retrieve the calendar object
+    calendar = Calendar.objects.get(id=calendar_id)
+
+    if request.method == 'POST':
+        form = ShareCalendarForm(request.POST)
+        if form.is_valid():
+            user_id = form.cleaned_data['user_id']
+            # Check if the user exists
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                # Handle the case where the user does not exist
+                form.add_error('user_id', 'User does not exist')
+                return render(request, 'Main/share_calendar.html', {'form': form})
+
+            # Check if the current user owns the calendar
+            if request.user in calendar.users.all():
+                # Create a UserCalendar object to link the user with the calendar
+                UserCalendar.objects.create(user=user, calendar=calendar)
+                return redirect('calendar_detail', calendar_id=calendar_id)
+            else:
+                # Handle the case where the current user does not own the calendar
+                form.add_error('user_id', 'You do not have permission to share this calendar')
+    else:
+        form = ShareCalendarForm()
+
+    return render(request, 'Main/share_calendar.html', {'form': form})
+
