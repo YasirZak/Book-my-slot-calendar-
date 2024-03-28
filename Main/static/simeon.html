@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #FFA500; /* Changed color to orange */
+            margin: 20px;
+            position: relative; /* Added relative positioning */
+        }
+
+        h1 {
+            color: #FFA500; /* Changed color to orange */
+            text-align: center;
+            animation-duration: 0.25s;
+        }
+
+        form {
+            width: 40%;
+            max-width: 600px; /* Increased max-width */
+            margin: auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: fixed; /* Fixed positioning */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2; /* Ensure the form appears above blurred background */
+            display: none; /* Initially hide the form */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #FFA500; /* Changed border color to orange */
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #FFA500; /* Changed background color to orange */
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #FF8C00; /* Changed hover color to a darker shade of orange */
+        }
+
+        .toggle-button {
+    position: fixed; /* Fixed positioning */
+    bottom: 20px; /* Distance from bottom */
+    right: 20px; /* Distance from right */
+    font-size: 47px;
+    background-color: #FFA500; /* Changed background color to orange */
+    color: #fff;
+    border: none;
+    border-radius: 10px; /* Rounded square */
+    width: 60px; /* Fixed button size */
+    height: 60px; /* Fixed button size */
+    line-height: 60px; /* Center the text vertically */
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease; /* Added smooth transition for the transform property */
+    z-index: 3; /* Ensure the button appears above blurred background */
+}
+
+        .toggle-button:hover {
+            background-color: #FF8C00; /* Changed hover color to a darker shade of orange */
+        }
+
+        .toggle-button.cross::before {
+            content: '×';
+        }
+
+        .toggle-button.cross::after {
+            opacity: 0;
+        }
+
+        /* CSS for blur effect */
+        .blur {
+            filter: blur(7px); /* Adjust the blur amount as needed */
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1; /* Start with full opacity */
+            }
+            to {
+                opacity: 0; /* End with completely transparent */
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="blurContainer">
+    <!-- Other content that should be blurred -->
+</div>
+
+<form id="eventForm" action="javascript:void(0)" onsubmit="return submitForm()">
+    <h1>Event Details</h1> <!-- Title inside the form -->
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" required>
+
+    <label for="startTime">Start Time:</label>
+    <input type="time" id="startTime" name="startTime" required>
+
+    <label for="duration">Duration:</label>
+    <div style="display: flex; align-items: center;">
+        <input type="number" id="durationHours" name="durationHours" min="0" placeholder="Hours">
+        <span style="margin: 0 5px;">:</span>
+        <input type="number" id="durationMinutes" name="durationMinutes" min="0" max="59" placeholder="Minutes">
+    </div>
+
+    <label for="venue">Venue:</label>
+    <input type="text" id="venue" name="venue">
+
+    <label for="eventName">Event Name:</label>
+    <input type="text" id="eventName" name="eventName" required>
+
+    <input type="submit" value="Submit">
+</form>
+
+<button class="toggle-button" onclick="toggleForm()">+</button> <!-- Button with the "+" sign to toggle the form -->
+
+<script>
+    function submitForm() {
+        const date = document.getElementById('date').value;
+        const eventName = document.getElementById('eventName').value;
+
+        if (!date) {
+            alert('Please fill in the date field.');
+            return false;
+        }
+
+        const confirmation = confirm('Do you wish to submit?');
+
+        if (confirmation) {
+            alert('Event added successfully!');
+            resetForm()
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function resetForm() {
+        const form = document.getElementById('eventForm');
+        form.reset(); // Reset the form
+    }
+
+    function toggleForm() {
+        const form = document.getElementById('eventForm');
+        const blurContainer = document.getElementById('blurContainer');
+        const title = document.querySelector('h1');
+        const button = document.querySelector('.toggle-button');
+
+        if (form.style.display === 'none' || form.style.display === '') {
+            // Show the form
+            form.style.display = 'block';
+            title.style.display = 'block';
+            title.style.animation = 'fadeIn 0.5s forwards';
+            button.textContent = '×';
+            blurContainer.classList.add('blur');
+            button.classList.toggle('');
+        } else {
+            // Hide the form
+            title.style.animation = 'fadeOut 0.5s forwards';
+            form.style.display = 'none'; // Hide the form after animation
+            title.style.display = 'none'; // Hide the title
+            blurContainer.classList.remove('blur'); // Remove blur effect
+            button.textContent = '+';
+            button.classList.toggle('');
+        }
+    }
+</script>
+</body>
+</html>
